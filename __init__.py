@@ -57,8 +57,24 @@ class VIEW3D_OT_unr_nav_tool(bpy.types.Operator):
         if event.value == 'RELEASE':
             if not self.is_dragging:
                 menu_name = "VIEW3D_MT_edit_mesh_context_menu" if context.mode == 'EDIT_MESH' else "VIEW3D_MT_object_context_menu"
+                
                 if event.type in {'LEFTMOUSE', 'RIGHTMOUSE'}:
-                    bpy.ops.view3d.select(extend=False, deselect_all=True, location=(event.mouse_region_x, event.mouse_region_y))
+                    is_multi = False
+                    if context.mode == 'OBJECT':
+                        is_multi = len(context.selected_objects) > 1
+                    elif context.mode == 'EDIT_MESH':
+                        obj = context.edit_object
+                        if obj:
+                            import bmesh
+                            bm = bmesh.from_edit_mesh(obj.data)
+                            selected_count = sum(1 for v in bm.verts if v.select) + \
+                                             sum(1 for e in bm.edges if e.select) + \
+                                             sum(1 for f in bm.faces if f.select)
+                            is_multi = selected_count > 1
+
+                    should_extend = is_multi
+                    bpy.ops.view3d.select(extend=should_extend, deselect_all=not should_extend, location=(event.mouse_region_x, event.mouse_region_y))
+                    
                     if event.type == 'RIGHTMOUSE':
                         bpy.ops.wm.call_menu(name=menu_name)
             
