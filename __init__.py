@@ -63,6 +63,7 @@ class VIEW3D_OT_unr_nav_tool(bpy.types.Operator):
                         bpy.ops.wm.call_menu(name=menu_name)
             
             if not self.lmb and not self.rmb:
+                self.set_mouse_cursor(True)
                 context.workspace.status_text_set(None)
                 return {'FINISHED'}
 
@@ -97,7 +98,14 @@ class VIEW3D_OT_unr_nav_tool(bpy.types.Operator):
         self.lmb, self.rmb = (event.type == 'LEFTMOUSE'), (event.type == 'RIGHTMOUSE')
         self.update_status_bar(context)
         context.window_manager.modal_handler_add(self)
+        self.set_mouse_cursor(False)
         return {'RUNNING_MODAL'}
+    
+    def set_mouse_cursor(self, show_mouse):
+        if show_mouse == True:
+            bpy.context.window.cursor_modal_restore()
+        else:
+            bpy.context.window.cursor_modal_set('NONE')
 
 class WM_OT_unr_nav_switcher(bpy.types.Operator):
     bl_idname = "wm.unr_nav_switcher"
