@@ -7,14 +7,14 @@ class UnrNavPreferences(AddonPreferences):
 
     move_sensitivity: bpy.props.FloatProperty(
         name="Move Sensitivity",
-        default=8.0,
+        default=1.25,
         min=1.0,
         max=20,
         precision=2,
     )
     look_sensitivity: bpy.props.FloatProperty(
         name="Look Sensitivity",
-        default=2.0,
+        default=1.0,
         min=0.1,
         max=10.0,
         precision=2,
