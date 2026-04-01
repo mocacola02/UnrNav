@@ -58,7 +58,10 @@ class VIEW3D_OT_unr_nav_tool(bpy.types.Operator):
             if not self.is_dragging:
                 menu_name = "VIEW3D_MT_edit_mesh_context_menu" if context.mode == 'EDIT_MESH' else "VIEW3D_MT_object_context_menu"
                 
-                if event.type in {'LEFTMOUSE', 'RIGHTMOUSE'}:
+                if event.type == 'LEFTMOUSE':
+                    bpy.ops.view3d.select(extend=False, deselect_all=True, location=(event.mouse_region_x, event.mouse_region_y))
+                
+                elif event.type == 'RIGHTMOUSE':
                     is_multi = False
                     if context.mode == 'OBJECT':
                         is_multi = len(context.selected_objects) > 1
@@ -74,9 +77,7 @@ class VIEW3D_OT_unr_nav_tool(bpy.types.Operator):
 
                     should_extend = is_multi
                     bpy.ops.view3d.select(extend=should_extend, deselect_all=not should_extend, location=(event.mouse_region_x, event.mouse_region_y))
-                    
-                    if event.type == 'RIGHTMOUSE':
-                        bpy.ops.wm.call_menu(name=menu_name)
+                    bpy.ops.wm.call_menu(name=menu_name)
             
             if not self.lmb and not self.rmb:
                 self.set_mouse_cursor(True)
@@ -156,6 +157,8 @@ addon_keymaps = []
 def register():
     bpy.utils.register_class(UnrNavPreferences)
     bpy.utils.register_class(VIEW3D_OT_unr_nav_tool)
+    try: bpy.utils.unregister_class(WM_OT_unr_nav_switcher)
+    except: pass
     bpy.utils.register_class(WM_OT_unr_nav_switcher)
     
     bpy.utils.register_tool(UnrNavTool, after={"builtin.select"}, separator=True, group=True)

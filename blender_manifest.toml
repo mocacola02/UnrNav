@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "unr_nav"
-version = "0.3.5"
+version = "0.3.6"
 name = "UNR Nav"
 tagline = "Enables UnrealEd 2.0 controls for Blender"
 maintainer = "LunaMoca"
